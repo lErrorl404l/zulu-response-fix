@@ -1,0 +1,13 @@
+# Dependabot configuration.
+#
+# This project has no code dependency manifests (pure C, no package
+# managers), so the only ecosystem to watch is the CI itself: the GitHub
+# Actions referenced by the workflows. Dependabot raises version and
+# security updates for those actions.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
