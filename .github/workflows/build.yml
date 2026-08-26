@@ -27,6 +27,9 @@ jobs:
           i686-w64-mingw32-gcc -O2 -o test_harness.exe
           test_harness.c -lws2_32 -ldinput8 -lwininet
 
+      - name: Force native dinput8 in Wine
+        run: wine reg add "HKCU\Software\Wine\DllOverrides" /v dinput8 /d native /f
+
       - name: Run behavioural tests under Wine
         run: wine test_harness.exe
 
@@ -35,6 +38,11 @@ jobs:
           sudo apt-get install -y clamav
           sudo freshclam --quiet || true
           clamscan --no-summary dinput8.dll
+
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4

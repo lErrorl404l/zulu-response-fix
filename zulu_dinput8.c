@@ -20,6 +20,7 @@
  *
  * Build: i686-w64-mingw32-gcc -shared -O2 -o dinput8.dll \
  *            zulu_dinput8.c zulu_dinput8.def -lws2_32
+  * SPDX-License-Identifier: MIT
  */
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

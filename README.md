@@ -43,6 +43,7 @@ system one. The DLL forwards dinput8, redirects the game's `connect()` calls
 for `110.232.115.186:80` to `127.0.0.1:8080`, and answers the game's access
 check (`yes`) from an in-process HTTP server.
 
-Tested on Linux/Proton. Windows build untested.
+Tested on Linux/Proton and Windows. CI runs the same behavioural tests on
+both, plus CodeQL, a ClamAV scan of the DLL, and a gitleaks secret scan.
 
 MIT. Not affiliated with Web Interactive Solutions.

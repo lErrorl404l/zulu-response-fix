@@ -18,6 +18,7 @@
  * Run with the DLL in the same directory as this exe.
  * Build: i686-w64-mingw32-gcc -O2 -o test_harness.exe test_harness.c \
  *            -lws2_32 -ldinput8 -lwininet
+  * SPDX-License-Identifier: MIT
  */
 #define DIRECTINPUT_VERSION 0x0800
 #include <winsock2.h>
