@@ -30,6 +30,12 @@ jobs:
       - name: Run behavioural tests under Wine
         run: wine test_harness.exe
 
+      - name: Malware scan the built DLL (ClamAV)
+        run: |
+          sudo apt-get install -y clamav
+          sudo freshclam --quiet || true
+          clamscan --no-summary dinput8.dll
+
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,35 @@
+name: code scanning
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 3 * * 0'
+
+permissions:
+  security-events: write
+  actions: read
+  contents: read
+
+jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mingw
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: cpp
+
+      - name: Build (traced)
+        run: |
+          i686-w64-mingw32-gcc -shared -O2 -o dinput8.dll \
+            zulu_dinput8.c zulu_dinput8.def -lws2_32 \
+            -Wl,--enable-stdcall-fixup
+          i686-w64-mingw32-gcc -O2 -o test_harness.exe \
+            test_harness.c -lws2_32 -ldinput8 -lwininet
+
+      - uses: github/codeql-action/analyze@v3
