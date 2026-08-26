@@ -1,0 +1,37 @@
+name: build and test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain (mingw + wine)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64 wine
+
+      - name: Build proxy DLL
+        run: >
+          i686-w64-mingw32-gcc -shared -O2 -o dinput8.dll
+          zulu_dinput8.c zulu_dinput8.def -lws2_32
+          -Wl,--enable-stdcall-fixup
+
+      - name: Build test harness
+        run: >
+          i686-w64-mingw32-gcc -O2 -o test_harness.exe
+          test_harness.c -lws2_32 -ldinput8 -lwininet
+
+      - name: Run behavioural tests under Wine
+        run: wine test_harness.exe
+
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dinput8.dll
+          path: dinput8.dll

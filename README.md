@@ -21,6 +21,21 @@ i686-w64-mingw32-gcc -shared -O2 -o dinput8.dll \
     zulu_dinput8.c zulu_dinput8.def -lws2_32
 ```
 
+## Test
+
+`test_harness.c` mimics the game's server calls without the game: every
+endpoint, method, and body the game sends, over both raw sockets and
+WININET, plus a pass-through check. Build the harness and run it with the
+DLL in the same directory:
+
+```
+i686-w64-mingw32-gcc -O2 -o test_harness.exe test_harness.c \
+    -lws2_32 -ldinput8 -lwininet
+wine test_harness.exe
+```
+
+All checks must pass (exit 0). CI runs the same steps on every push.
+
 ## How it works
 
 The game imports `dinput8.dll`, so a copy in the app folder loads before the

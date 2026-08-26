@@ -29,6 +29,8 @@
 #include <wininet.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+#include <ctype.h>
 #include <wchar.h>
 #include <string.h>
 
@@ -69,6 +71,19 @@ static void logmsg(const char *fmt, ...)
 /* ------------------------------------------------------------------ */
 /* HTTP server                                                         */
 /* ------------------------------------------------------------------ */
+static const char *stristr(const char *haystack, const char *needle)
+{
+    for (; *haystack; haystack++) {
+        const char *a = haystack, *b = needle;
+        while (*a && *b &&
+               tolower((unsigned char)*a) == tolower((unsigned char)*b))
+            a++, b++;
+        if (!*b)
+            return haystack;
+    }
+    return NULL;
+}
+
 static void serve_client(SOCKET c)
 {
     char buf[4096];
@@ -81,7 +96,8 @@ static void serve_client(SOCKET c)
             first[i] = buf[i];
         first[i] = 0;
         logmsg("server: %s", first);
-        const char *body = (strstr(buf, "notify") != NULL) ? NOTIFY_MSG : "yes";
+        /* notify requests use "zuNotify.php": match case-insensitively */
+        const char *body = (stristr(buf, "notify") != NULL) ? NOTIFY_MSG : "yes";
         char resp[1024];
         int rl = _snprintf(resp, sizeof(resp),
                            "HTTP/1.0 200 OK\r\nConnection: close\r\n"
