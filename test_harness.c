@@ -182,6 +182,36 @@ static void test_wininet_path(void)
     InternetCloseHandle(h);
 }
 
+/* Wait until the proxy hook is active: retry the access check up to 10s.
+   The hook installs asynchronously (it must wait for the loader to finish
+   resolving imports), and first-run Wine prefix setup can delay it. */
+static int wait_for_hook(void)
+{
+    char buf[256];
+    for (int i = 0; i < 20; i++) {
+        if (raw_request("GET", "/zuGameInfo.php", NULL, buf, sizeof(buf)) > 0 &&
+            strstr(buf, "yes") != NULL)
+            return 1;
+        Sleep(500);
+    }
+    return 0;
+}
+
+static void dump_dll_log(void)
+{
+    char p[MAX_PATH], t[MAX_PATH];
+    GetTempPathA(sizeof(t), t);
+    _snprintf(p, sizeof(p), "%szulu_fix.log", t);
+    FILE *f = fopen(p, "r");
+    if (f) {
+        char line[256];
+        printf("--- zulu_fix.log ---\n");
+        while (fgets(line, sizeof(line), f))
+            printf("  %s", line);
+        fclose(f);
+    }
+}
+
 int main(void)
 {
     /* Import dinput8.dll and use it, exactly like the game does. This also
@@ -200,12 +230,17 @@ int main(void)
         printf("FAIL: WSAStartup\n");
         return 1;
     }
-    Sleep(2000);  /* let the DLL's hook thread install (at 1s) */
+    if (!wait_for_hook()) {
+        printf("FAIL: proxy hook never became active\n");
+        fails++;
+    }
 
     test_raw_path();
     test_pass_through();
     test_wininet_path();
 
+    if (fails)
+        dump_dll_log();
     printf(fails ? "RESULT: %d FAILURE(S)\n" : "RESULT: ALL PASS\n", fails);
     return fails ? 1 : 0;
 }

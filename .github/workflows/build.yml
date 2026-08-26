@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,5 +33,38 @@ jobs:
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dinput8.dll
+          name: dinput8.dll-linux
+          path: dinput8.dll
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW32
+          install: mingw-w64-i686-gcc
+
+      - name: Build proxy DLL
+        shell: msys2 {0}
+        run: >
+          i686-w64-mingw32-gcc -shared -O2 -o dinput8.dll
+          zulu_dinput8.c zulu_dinput8.def -lws2_32
+          -Wl,--enable-stdcall-fixup
+
+      - name: Build test harness
+        shell: msys2 {0}
+        run: >
+          i686-w64-mingw32-gcc -O2 -o test_harness.exe
+          test_harness.c -lws2_32 -ldinput8 -lwininet
+
+      - name: Run behavioural tests natively
+        shell: msys2 {0}
+        run: ./test_harness.exe
+
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dinput8.dll-windows
           path: dinput8.dll
