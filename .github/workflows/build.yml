@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -32,6 +36,11 @@ jobs:
 
       - name: Run behavioural tests under Wine
         run: wine test_harness.exe
+
+      - name: Sign build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dinput8.dll
 
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
@@ -85,3 +94,11 @@ jobs:
         run: >
           docker run --rm -v "$PWD/artifact:/scan" clamav/clamav
           clamscan --no-summary /scan/dinput8.dll
+
+      - name: Upload to VirusTotal
+        if: ${{ secrets.VT_API_KEY != '' }}
+        uses: virustotal/github-action@v0.5.1
+        with:
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: artifact/dinput8.dll

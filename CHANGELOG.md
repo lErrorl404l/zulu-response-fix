@@ -2,6 +2,18 @@
 
 All notable changes are recorded here. Releases are signed tags on `main`.
 
+## [1.0.2] - unreleased
+
+Changed:
+- installation is now drag-and-drop only: one file into
+  `Binaries\Win32`. The `.cmd` installer scripts were removed: for a
+  single-file mod they added suspicion without value, and they were not
+  cross-platform.
+- CI jobs split: `build-linux`, `build-windows`, `scan`
+- build provenance signed by GitHub (`attest-build-provenance`)
+- VirusTotal upload in CI (activated when the `VT_API_KEY` secret is set)
+- README gained a "Is it safe?" section (hash, provenance, scans)
+
 ## [1.0.1] - 2026-08-27
 
 Fixed:

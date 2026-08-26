@@ -11,23 +11,52 @@ the game.
 ## Install (one minute, no technical knowledge needed)
 
 1. Go to **[Releases](https://github.com/lErrorl404l/zulu-response-fix/releases)**
-2. Download the latest **Windows zip**
+2. Download the latest **Windows zip** (the file whose name ends in `-windows.zip`)
 3. Unzip it anywhere
-4. Double-click **`install.cmd`**
-5. Launch Zulu Response from Steam
+4. Find your game folder:
+   - In Steam, right-click **Zulu Response** → **Manage** → **Browse local files**
+5. In the folder that opens, go into **`Binaries`** → **`Win32`**
+6. **Drag `dinput8.dll`** from the unzipped folder into **`Win32`**
+7. Launch Zulu Response
 
-The installer finds the game folder by itself, on any Steam library drive.
-No folders to dig through, nothing to configure.
+That is the whole install: one file dragged into one folder, the same way
+every game mod works. Nothing is installed system-wide, no script runs,
+nothing needs administrator rights.
 
-**If Windows says "Unknown publisher"** when you run the installer:
-click **More info**, then **Run anyway**. This is normal for a small
-community mod without a paid signing certificate. The code is open source,
-built and tested automatically on every change.
+**Linux / Steam Deck (Proton):** the same file goes into the same folder
+inside the game's Proton prefix:
+`steamapps/common/Zulu Response/Binaries/Win32/`.
+
+**If Windows says "Unknown publisher"** when you unzip: this is normal for
+a small community mod without a paid signing certificate. The file is
+built by automated CI from this exact source code, and you can verify it
+(see below).
 
 ## Uninstall
 
-Double-click **`uninstall.cmd`**. Or delete the file `dinput8.dll` from
-the game's `Binaries\Win32` folder. The game returns to normal.
+Delete `dinput8.dll` from `Binaries\Win32`. The game returns to normal.
+
+## Is it safe?
+
+The fix is one small, open file that does one thing: redirect the game's
+check of one dead server to a local copy of that server's 2017 response.
+You can verify every claim below yourself:
+
+- **Source**: the whole project is ~300 lines of C in this repository.
+- **CI-built**: the released DLL is compiled by GitHub's servers from this
+  source on every change, not on anyone's personal computer.
+- **Provenance**: the build is signed by GitHub (`attest-build-provenance`);
+  anyone can verify it came from this repository's CI.
+- **Hash**: each release publishes the SHA-256 of the DLL. Compare it with
+  what you downloaded — if they match, your file is byte-for-byte the CI
+  build.
+- **Scans**: CI runs ClamAV on every build and uploads the DLL to
+  VirusTotal before release. Check the VirusTotal link in the release
+  notes.
+- **Tests**: CI runs behavioural tests against the DLL on Windows and
+  Linux. The tests check it only redirects the one dead server and answers
+  the game's protocol correctly; all other network traffic passes through
+  untouched.
 
 ## Does it work?
 
