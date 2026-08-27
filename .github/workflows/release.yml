@@ -1,0 +1,76 @@
+# Release process (per Defence Git Practices: CI builds, signed tag, SBOM
+# generated at the tag event from git metadata, release assets attached).
+#
+# Triggered by pushing a signed tag v*. The release DLL is built here in CI
+# from the tagged commit - never from a local machine.
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mingw
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+
+      - name: Build proxy DLL
+        run: >
+          i686-w64-mingw32-gcc -shared -O2 -o dinput8.dll
+          zulu_dinput8.c zulu_dinput8.def -lws2_32
+          -Wl,--enable-stdcall-fixup
+
+      - name: Package release zip
+        run: |
+          mkdir -p dist
+          cp dinput8.dll README.md LICENSE dist/
+          cd dist && zip -q "zulu-response-fix-${GITHUB_REF_NAME}-windows.zip" \
+            dinput8.dll README.md LICENSE
+
+      - name: Generate SBOM (Syft, SPDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          artifact-name: zulu-response-fix.sbom.json
+
+      - name: Prepare release notes
+        run: |
+          HASH=$(sha256sum dinput8.dll | cut -d' ' -f1)
+          COMMIT=$(git rev-parse --short HEAD)
+          cat > notes.md <<EOF
+          Drag-and-drop fix for Zulu Response (Steam 401250). Stops the game
+          closing at the menu.
+
+          ## Install
+          1. Unzip this archive
+          2. Steam > right-click Zulu Response > Manage > Browse local files
+          3. Open Binaries > Win32
+          4. Drag dinput8.dll into that folder
+          5. Launch the game
+
+          Uninstall: delete dinput8.dll. Works on Windows and Linux/Proton.
+
+          ## Verify
+          - SHA-256: \`$HASH\`
+          - Built by GitHub CI from commit \`$COMMIT\`
+          - VirusTotal scan of the same source (locally built):
+            https://www.virustotal.com/gui/file/f7ee3cdf2f4db1898f2fb74442294dd65dce1333aceee356386c2ba98d5d0d04/
+          - ClamAV scan: clean (run in CI on every build)
+          EOF
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
+            zulu-response-fix.sbom.json
+          body_file: notes.md

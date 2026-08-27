@@ -10,8 +10,8 @@ Changed:
   single-file mod they added suspicion without value, and they were not
   cross-platform.
 - CI jobs split: `build-linux`, `build-windows`, `scan`
-- build provenance signed by GitHub (`attest-build-provenance`)
-- VirusTotal upload in CI (activated when the `VT_API_KEY` secret is set)
+- releases are built entirely in CI: a tagged push builds the DLL,
+  generates an SPDX SBOM (Syft) and attaches zip + SBOM to the release
 - README gained a "Is it safe?" section (hash, provenance, scans)
 
 ## [1.0.1] - 2026-08-27

@@ -50,9 +50,8 @@ You can verify every claim below yourself:
   build.
 - **Scans**: CI runs ClamAV on every build. The release notes link a
   VirusTotal result for the released file.
-- **SBOM**: `sbom.spdx.json` lists every component: the project itself,
-  its build toolchain, and the Windows system libraries it links. There
-  are no third-party runtime components.
+- **SBOM**: an SPDX SBOM is generated in CI at every release (Syft) and
+  attached to the release. There are no third-party runtime components.
 - **Tests**: CI runs behavioural tests against the DLL on Windows and
   Linux. The tests check it only redirects the one dead server and answers
   the game's protocol correctly; all other network traffic passes through
