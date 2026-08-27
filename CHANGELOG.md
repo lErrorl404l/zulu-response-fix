@@ -2,7 +2,7 @@
 
 All notable changes are recorded here. Releases are signed tags on `main`.
 
-## [1.0.2] - unreleased
+## [1.0.2] - 2026-08-27
 
 Changed:
 - installation is now drag-and-drop only: one file into
