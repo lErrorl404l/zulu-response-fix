@@ -87,6 +87,7 @@ jobs:
         if: ${{ steps.vt.outputs.analysis != '' }}
         env:
           VT_OUTPUT: ${{ steps.vt.outputs.analysis }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           URL="${VT_OUTPUT#*=}"
           gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
