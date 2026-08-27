@@ -41,6 +41,7 @@ jobs:
           path: .
           format: spdx-json
           artifact-name: zulu-response-fix.sbom.json
+          upload-release-assets: true
 
       - name: Prepare release notes
         run: |
@@ -72,5 +73,4 @@ jobs:
         with:
           files: |
             dist/*.zip
-            zulu-response-fix.sbom.json
-          body_file: notes.md
+          body_path: notes.md
