@@ -90,5 +90,8 @@ jobs:
           VT_OUTPUT: ${{ steps.vt.outputs.analysis }}
         run: |
           URL="${VT_OUTPUT#*=}"
+          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --json body -q .body > body.md
+          printf '\nVirusTotal analysis of this build: %s\n' "$URL" >> body.md
           gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
-            --notes-footer "VirusTotal analysis of this build: $URL"
+            --notes-file body.md
