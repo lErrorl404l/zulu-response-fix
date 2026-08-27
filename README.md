@@ -8,6 +8,15 @@ runs the missing server locally inside the game. Nothing is removed from
 the game, and no protection is bypassed. You still need your own copy of
 the game.
 
+## The game
+
+Zulu Response is a 2016 early-access game by Web Interactive Solutions,
+built with the Unreal Development Kit. It is on
+[Steam](https://store.steampowered.com/app/401250/). The developers'
+[ModDB game page](https://www.moddb.com/games/zulu-response) and
+[company page](https://www.moddb.com/company/web-interactive-solutions)
+are still up; the original website is offline.
+
 ## Install (one minute, no technical knowledge needed)
 
 1. Go to **[Releases](https://github.com/lErrorl404l/zulu-response-fix/releases)**
