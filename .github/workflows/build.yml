@@ -85,13 +85,3 @@ jobs:
         run: >
           docker run --rm -v "$PWD/artifact:/scan" clamav/clamav
           clamscan --no-summary /scan/dinput8.dll
-
-      - name: Upload to VirusTotal
-        env:
-          VT_API_KEY: ${{ secrets.VT_API_KEY }}
-        if: ${{ env.VT_API_KEY != '' }}
-        uses: virustotal/github-action@v0.5.1
-        with:
-          vt_api_key: ${{ secrets.VT_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: artifact/dinput8.dll

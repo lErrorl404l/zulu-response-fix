@@ -1,0 +1,91 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "zulu-response-fix",
+  "documentNamespace": "https://github.com/lErrorl404l/zulu-response-fix/sbom-1.0.2",
+  "creationInfo": {
+    "created": "2026-08-27T00:00:00Z",
+    "creators": ["Tool: hand-written"]
+  },
+  "packages": [
+    {
+      "name": "zulu-response-fix",
+      "SPDXID": "SPDXRef-Package-zulu-response-fix",
+      "versionInfo": "1.0.2",
+      "supplier": "Organization: lErrorl404l",
+      "downloadLocation": "https://github.com/lErrorl404l/zulu-response-fix",
+      "filesAnalyzed": true,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2026 Matthew Barker"
+    },
+    {
+      "name": "mingw-w64",
+      "SPDXID": "SPDXRef-Package-mingw-w64",
+      "versionInfo": "12.0.0",
+      "supplier": "Organization: mingw-w64 project",
+      "downloadLocation": "https://www.mingw-w64.org/",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "ws2_32.dll (Windows Sockets)",
+      "SPDXID": "SPDXRef-Package-ws2_32",
+      "versionInfo": "NOASSERTION",
+      "supplier": "Organization: Microsoft Corporation",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "wininet.dll (Windows Internet)",
+      "SPDXID": "SPDXRef-Package-wininet",
+      "versionInfo": "NOASSERTION",
+      "supplier": "Organization: Microsoft Corporation",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "dinput8.dll (DirectInput 8)",
+      "SPDXID": "SPDXRef-Package-dinput8",
+      "versionInfo": "NOASSERTION",
+      "supplier": "Organization: Microsoft Corporation",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-zulu-response-fix"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-zulu-response-fix",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Package-mingw-w64"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-zulu-response-fix",
+      "relationshipType": "DYNAMIC_LINK",
+      "relatedSpdxElement": "SPDXRef-Package-ws2_32"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-zulu-response-fix",
+      "relationshipType": "DYNAMIC_LINK",
+      "relatedSpdxElement": "SPDXRef-Package-wininet"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-zulu-response-fix",
+      "relationshipType": "DYNAMIC_LINK",
+      "relatedSpdxElement": "SPDXRef-Package-dinput8"
+    }
+  ]
+}

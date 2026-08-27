@@ -48,9 +48,11 @@ You can verify every claim below yourself:
 - **Hash**: each release publishes the SHA-256 of the DLL. Compare it with
   what you downloaded — if they match, your file is byte-for-byte the CI
   build.
-- **Scans**: CI runs ClamAV on every build and uploads the DLL to
-  VirusTotal before release. Check the VirusTotal link in the release
-  notes.
+- **Scans**: CI runs ClamAV on every build. The release notes link a
+  VirusTotal result for the released file.
+- **SBOM**: `sbom.spdx.json` lists every component: the project itself,
+  its build toolchain, and the Windows system libraries it links. There
+  are no third-party runtime components.
 - **Tests**: CI runs behavioural tests against the DLL on Windows and
   Linux. The tests check it only redirects the one dead server and answers
   the game's protocol correctly; all other network traffic passes through
