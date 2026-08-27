@@ -29,12 +29,9 @@ jobs:
           -Wl,--enable-stdcall-fixup
 
       - name: Generate SBOM (Syft, SPDX)
-        uses: anchore/sbom-action@v0
-        with:
-          path: .
-          format: spdx-json
-          artifact-name: zulu-response-fix.sbom.json
-          upload-release-assets: true
+        run: >
+          docker run --rm -v "$PWD:/src" anchore/syft /src
+          -o spdx-json=/src/zulu-response-fix.sbom.json
 
       - name: Prepare release notes
         run: |
@@ -45,7 +42,7 @@ jobs:
           closing at the menu.
 
           ## Install
-          1. Unzip this archive
+          1. Download dinput8.dll (the file below)
           2. Steam > right-click Zulu Response > Manage > Browse local files
           3. Open Binaries > Win32
           4. Drag dinput8.dll into that folder
@@ -64,5 +61,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: dinput8.dll
+          files: |
+            dinput8.dll
+            zulu-response-fix.sbom.json
           body_path: notes.md
