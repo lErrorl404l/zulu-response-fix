@@ -33,7 +33,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <wchar.h>
-#include <string.h>
 
 /* Network-byte-order constants. */
 #define DEAD_ADDR   0x0BA73E86EUL   /* bytes 6E E8 73 BA = 110.232.115.186 */
@@ -43,30 +42,40 @@
 
 #define NOTIFY_MSG "To Host Games your router must Port Forward ports : 6500, 7777 to 7790, 13000, 27900 *$*"
 
+#ifndef IMAGE_ORDINAL_FLAG32
 #define IMAGE_ORDINAL_FLAG32 0x80000000
+#endif
+#ifndef IMAGE_ORDINAL32
 #define IMAGE_ORDINAL32(n) ((n) & 0xFFFF)
+#endif
 
 /* ------------------------------------------------------------------ */
 /* Logging                                                             */
 /* ------------------------------------------------------------------ */
 static FILE *g_logf;
+static CRITICAL_SECTION g_log_lock;
+static BOOL g_log_lock_ready;
 
 static void logmsg(const char *fmt, ...)
 {
+    if (g_log_lock_ready)
+        EnterCriticalSection(&g_log_lock);
     if (!g_logf) {
         char p[MAX_PATH];
         GetTempPathA(sizeof(p), p);
         lstrcatA(p, "zulu_fix.log");
         g_logf = fopen(p, "a");
     }
-    if (!g_logf)
-        return;
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(g_logf, fmt, ap);
-    va_end(ap);
-    fputc('\n', g_logf);
-    fflush(g_logf);
+    if (g_logf) {
+        va_list ap;
+        va_start(ap, fmt);
+        vfprintf(g_logf, fmt, ap);
+        va_end(ap);
+        fputc('\n', g_logf);
+        fflush(g_logf);
+    }
+    if (g_log_lock_ready)
+        LeaveCriticalSection(&g_log_lock);
 }
 
 /* ------------------------------------------------------------------ */
@@ -215,12 +224,12 @@ static void patch_iat_slot(HMODULE mod, const char *dll, WORD ordinal,
             VirtualProtect(iat, sizeof(DWORD), PAGE_READWRITE, &old);
             *iat = (DWORD)new_fn;
             VirtualProtect(iat, sizeof(DWORD), old, &old);
-            logmsg("hook: %s!%s slot @%p -> my_connect", dll,
+            logmsg("fix: %s!%s slot @%p -> my_connect", dll,
                    name ? name : "#ord", iat);
             return;
         }
     }
-    logmsg("hook: %s!%s slot not found in module", dll,
+    logmsg("fix: %s!%s slot not found in module", dll,
            name ? name : "#ord");
 }
 
@@ -256,12 +265,12 @@ static DWORD WINAPI hook_thread(LPVOID unused)
     if (!ws)
         ws = LoadLibraryA("ws2_32.dll");
     if (!ws) {
-        logmsg("hook: ws2_32 not available");
+        logmsg("fix: ws2_32 not available");
         return 1;
     }
     g_real_connect = (connect_t)GetProcAddress(ws, "connect");
     if (!g_real_connect) {
-        logmsg("hook: connect export not found");
+        logmsg("fix: connect export not found");
         return 1;
     }
 
@@ -284,7 +293,7 @@ static DWORD WINAPI hook_thread(LPVOID unused)
                    (FARPROC)my_InternetOpenUrlA);
     patch_iat_slot(exe, "WININET.dll", 0, "InternetOpenUrlW",
                    (FARPROC)my_InternetOpenUrlW);
-    logmsg("hook: real connect is %p", g_real_connect);
+    logmsg("fix: real connect is %p", g_real_connect);
     return 0;
 }
 
@@ -320,9 +329,8 @@ static HINTERNET WINAPI my_InternetConnectW(HINTERNET h, LPCWSTR server,
  * Rewrite http://110.232.115.186[:80]/... to http://127.0.0.1:8080/...
  * The caller's URL string is read-only, so a copy is built.
  */
-static LPCSTR rewrite_url(const char *url)
+static LPCSTR rewrite_url(const char *url, char *buf, size_t bufsize)
 {
-    static char buf[1024];
     const char *host = strstr(url, DEAD_HOST);
     if (!host)
         return url;
@@ -330,19 +338,17 @@ static LPCSTR rewrite_url(const char *url)
     const char *end = host + strlen(DEAD_HOST);
     if (*end == ':')
         end++;                    /* skip ":80" if present */
-    if (pre + strlen(LOCAL_HOST) + 6 + strlen(end) < sizeof(buf)) {
+    if (pre + strlen(LOCAL_HOST) + 6 + strlen(end) < bufsize) {
         memcpy(buf, url, pre);
         strcpy(buf + pre, LOCAL_HOST ":8080");
         strcat(buf, end);
-        logmsg("connect: wininet url rewritten to %s", buf);
         return buf;
     }
     return url;
 }
 
-static LPCWSTR rewrite_url_w(const wchar_t *url)
+static LPCWSTR rewrite_url_w(const wchar_t *url, wchar_t *buf, size_t bufsize)
 {
-    static wchar_t buf[1024];
     const wchar_t *host = wcsstr(url, L"110.232.115.186");
     if (!host)
         return url;
@@ -350,7 +356,7 @@ static LPCWSTR rewrite_url_w(const wchar_t *url)
     const wchar_t *end = host + wcslen(L"110.232.115.186");
     if (*end == L':')
         end++;
-    if (pre + wcslen(L"127.0.0.1") + 6 + wcslen(end) < 1024) {
+    if (pre + wcslen(L"127.0.0.1") + 6 + wcslen(end) < bufsize) {
         memcpy(buf, url, pre * sizeof(wchar_t));
         wcscpy(buf + pre, L"127.0.0.1:8080");
         wcscat(buf, end);
@@ -362,13 +368,17 @@ static LPCWSTR rewrite_url_w(const wchar_t *url)
 static HINTERNET WINAPI my_InternetOpenUrlA(HINTERNET h, LPCSTR url,
         LPCSTR headers, DWORD hl, DWORD fl, DWORD_PTR cx)
 {
-    return g_real_iurl(h, rewrite_url(url), headers, hl, fl, cx);
+    char buf[1024];
+    return g_real_iurl(h, rewrite_url(url, buf, sizeof(buf)),
+                       headers, hl, fl, cx);
 }
 
 static HINTERNET WINAPI my_InternetOpenUrlW(HINTERNET h, LPCWSTR url,
         LPCWSTR headers, DWORD hl, DWORD fl, DWORD_PTR cx)
 {
-    return g_real_iurlw(h, rewrite_url_w(url), headers, hl, fl, cx);
+    wchar_t buf[1024];
+    return g_real_iurlw(h, rewrite_url_w(url, buf, sizeof(buf) / sizeof(wchar_t)),
+                        headers, hl, fl, cx);
 }
 
 /* ------------------------------------------------------------------ */
