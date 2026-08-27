@@ -72,6 +72,30 @@ You can verify every claim below yourself:
   the game's protocol correctly; all other network traffic passes through
   untouched.
 
+## Windows may warn about this file
+
+Windows Defender may flag this DLL as `Trojan:Win32/Wacatac.C!ml`. The
+`!ml` suffix means a machine-learning heuristic, not a virus signature.
+
+Why it is flagged: the file behaves like malware by design. It is
+unsigned, built with an uncommon toolchain, and it redirects one network
+call — the exact behavioural profile heuristic detectors look for. The
+difference is intent and transparency: this project does it openly, in a
+few hundred lines of readable source, built by CI from this repository.
+
+How to verify it is safe:
+
+- compare the SHA-256 in the release notes with your downloaded file
+- check the VirusTotal analysis linked in the release notes
+- read the source (`zulu_dinput8.c`) and the test harness
+  (`test_harness.c`): the automated tests prove that only connections to
+  `110.232.115.186:80` are touched and all other traffic passes through
+  untouched
+
+If you downloaded the file from this repository's release and it still
+alerts, you can report the flag to Microsoft as a false positive:
+https://www.microsoft.com/en-us/wdsi/filesubmission
+
 ## Does it work?
 
 - Verified on **Windows** and **Linux** (Steam Proton).
