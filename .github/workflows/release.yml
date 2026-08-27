@@ -72,6 +72,7 @@ jobs:
           body_path: notes.md
 
       - name: VirusTotal scan
+        id: vt
         env:
           VT_API_KEY: ${{ secrets.VT_API_KEY }}
         if: ${{ env.VT_API_KEY != '' }}
@@ -82,3 +83,12 @@ jobs:
           files: dinput8.dll
           update_release_body: true
           request_rate: 4
+
+      - name: Append VirusTotal link to release body
+        if: ${{ steps.vt.outputs.analysis != '' }}
+        env:
+          VT_OUTPUT: ${{ steps.vt.outputs.analysis }}
+        run: |
+          URL="${VT_OUTPUT#*=}"
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --notes-footer "VirusTotal analysis of this build: $URL"
