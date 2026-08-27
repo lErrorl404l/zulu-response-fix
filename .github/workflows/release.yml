@@ -28,9 +28,15 @@ jobs:
           zulu_dinput8.c zulu_dinput8.def -lws2_32
           -Wl,--enable-stdcall-fixup
 
+      - name: Malware scan the release DLL (ClamAV)
+        run: >
+          docker run --rm -v "$PWD:/scan" clamav/clamav
+          clamscan --no-summary /scan/dinput8.dll
+
       - name: Generate SBOM (Syft, SPDX)
         run: >
           docker run --rm -v "$PWD:/src" anchore/syft /src
+          --source-name zulu-response-fix
           -o spdx-json=/src/sbom.json
 
       - name: Prepare release notes
