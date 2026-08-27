@@ -17,11 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+
       - name: Build with MSVC (32-bit DLL)
         shell: cmd
-        run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars32.bat" >nul
-          cl /LD /O2 zulu_dinput8.c /Fe:dinput8-msvc.dll /link /DEF:zulu_dinput8.def ws2_32.lib wininet.lib
+        run: >
+          cl /LD /O2 zulu_dinput8.c /Fe:dinput8-msvc.dll
+          /link /DEF:zulu_dinput8.def ws2_32.lib wininet.lib
 
       - name: Upload MSVC build to VirusTotal
         id: vt
