@@ -41,7 +41,7 @@ nothing needs administrator rights.
 inside the game's Proton prefix:
 `steamapps/common/Zulu Response/Binaries/Win32/`.
 
-**If Windows says "Unknown publisher"** when you unzip: this is normal for
+**If Windows says "Unknown publisher"** when you download it: this is normal for
 a small community mod without a paid signing certificate. The file is
 built by automated CI from this exact source code, and you can verify it
 (see below).
