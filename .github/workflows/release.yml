@@ -29,11 +29,6 @@ jobs:
           zulu_dinput8.c zulu_dinput8.def -lws2_32
           -Wl,--enable-stdcall-fixup
 
-      - name: Sign build provenance
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: dinput8.dll
-
       - name: Malware scan the release DLL (ClamAV)
         run: >
           docker run --rm -v "$PWD:/scan" clamav/clamav
