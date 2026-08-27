@@ -31,7 +31,7 @@ jobs:
       - name: Generate SBOM (Syft, SPDX)
         run: >
           docker run --rm -v "$PWD:/src" anchore/syft /src
-          -o spdx-json=/src/zulu-response-fix.sbom.json
+          -o spdx-json=/src/sbom.json
 
       - name: Prepare release notes
         run: |
@@ -63,5 +63,5 @@ jobs:
         with:
           files: |
             dinput8.dll
-            zulu-response-fix.sbom.json
+            sbom.json
           body_path: notes.md
