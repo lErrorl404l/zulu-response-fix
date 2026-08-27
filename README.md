@@ -1,5 +1,10 @@
 # Zulu Response Fix
 
+[![build and test](https://img.shields.io/github/actions/workflow/status/lErrorl404l/zulu-response-fix/build.yml?label=build%20%26%20test)](https://github.com/lErrorl404l/zulu-response-fix/actions/workflows/build.yml)
+[![code scanning](https://img.shields.io/github/actions/workflow/status/lErrorl404l/zulu-response-fix/codeql.yml?label=code%20scanning)](https://github.com/lErrorl404l/zulu-response-fix/actions/workflows/codeql.yml)
+[![release](https://img.shields.io/github/v/release/lErrorl404l/zulu-response-fix)](https://github.com/lErrorl404l/zulu-response-fix/releases)
+[![license](https://img.shields.io/github/license/lErrorl404l/zulu-response-fix)](LICENSE)
+
 **Your game closes by itself after loading.** This fix stops that.
 
 Zulu Response (2016) depended on an online server that no longer exists.
@@ -57,9 +62,10 @@ You can verify every claim below yourself:
 - **Hash**: each release publishes the SHA-256 of the DLL. Compare it with
   what you downloaded — if they match, your file is byte-for-byte the CI
   build.
-- **Scans**: CI runs ClamAV on every build. The released file was also
-  scanned on VirusTotal — check it yourself:
-  https://www.virustotal.com/gui/file/f7ee3cdf2f4db1898f2fb74442294dd65dce1333aceee356386c2ba98d5d0d04/
+- **Scans**: every release is uploaded to VirusTotal automatically; the
+  analysis link appears in the release notes. CI also runs ClamAV on every
+  build. The first release's VirusTotal result is
+  [here](https://www.virustotal.com/gui/file/f7ee3cdf2f4db1898f2fb74442294dd65dce1333aceee356386c2ba98d5d0d04/).
 - **SBOM**: an SPDX SBOM is generated in CI at every release (Syft) and
   attached to the release. There are no third-party runtime components.
 - **Tests**: CI runs behavioural tests against the DLL on Windows and

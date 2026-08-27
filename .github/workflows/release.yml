@@ -71,3 +71,15 @@ jobs:
             dinput8.dll
             sbom.json
           body_path: notes.md
+
+      - name: VirusTotal scan
+        env:
+          VT_API_KEY: ${{ secrets.VT_API_KEY }}
+        if: ${{ env.VT_API_KEY != '' }}
+        uses: crazy-max/ghaction-virustotal@v5
+        with:
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: dinput8.dll
+          update_release_body: true
+          request_rate: 4
