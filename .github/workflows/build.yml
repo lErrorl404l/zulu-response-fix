@@ -34,7 +34,7 @@ jobs:
         run: wine test_harness.exe
 
       - name: Upload DLL artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dinput8.dll-linux
           path: dinput8.dll
@@ -67,7 +67,7 @@ jobs:
         run: ./test_harness.exe
 
       - name: Upload DLL artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dinput8.dll-windows
           path: dinput8.dll
