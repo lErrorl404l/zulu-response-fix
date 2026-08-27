@@ -62,10 +62,9 @@ You can verify every claim below yourself:
 - **Hash**: each release publishes the SHA-256 of the DLL. Compare it with
   what you downloaded — if they match, your file is byte-for-byte the CI
   build.
-- **Scans**: every release is uploaded to VirusTotal automatically; the
-  analysis link appears in the release notes. CI also runs ClamAV on every
-  build. The first release's VirusTotal result is
-  [here](https://www.virustotal.com/gui/file/f7ee3cdf2f4db1898f2fb74442294dd65dce1333aceee356386c2ba98d5d0d04/).
+- **Scans**: every release's own build is uploaded to VirusTotal
+  automatically — the analysis link is in each release's notes. CI also
+  runs ClamAV on every build and on the release itself.
 - **SBOM**: an SPDX SBOM is generated in CI at every release (Syft) and
   attached to the release. There are no third-party runtime components.
 - **Tests**: CI runs behavioural tests against the DLL on Windows and

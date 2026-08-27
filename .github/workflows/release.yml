@@ -59,9 +59,8 @@ jobs:
           ## Verify
           - SHA-256: \`$HASH\`
           - Built by GitHub CI from commit \`$COMMIT\`
-          - VirusTotal scan of the same source (locally built):
-            https://www.virustotal.com/gui/file/f7ee3cdf2f4db1898f2fb74442294dd65dce1333aceee356386c2ba98d5d0d04/
-          - ClamAV scan: clean (run in CI on every build)
+          - VirusTotal analysis of this exact build is appended below
+          - ClamAV scan: clean (run in CI on the release build)
           EOF
 
       - name: Create release
