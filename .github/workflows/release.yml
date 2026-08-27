@@ -28,13 +28,6 @@ jobs:
           zulu_dinput8.c zulu_dinput8.def -lws2_32
           -Wl,--enable-stdcall-fixup
 
-      - name: Package release zip
-        run: |
-          mkdir -p dist
-          cp dinput8.dll README.md LICENSE dist/
-          cd dist && zip -q "zulu-response-fix-${GITHUB_REF_NAME}-windows.zip" \
-            dinput8.dll README.md LICENSE
-
       - name: Generate SBOM (Syft, SPDX)
         uses: anchore/sbom-action@v0
         with:
@@ -71,6 +64,5 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/*.zip
+          files: dinput8.dll
           body_path: notes.md
