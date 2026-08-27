@@ -1,0 +1,26 @@
+name: Bug report
+description: The fix does not behave as documented
+title: "[bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What the fix did, or failed to do. Include any error message.
+    validations:
+      required: true
+  - type: textarea
+    id: system
+    attributes:
+      label: System
+      description: Windows or Linux/Proton, Steam settings, and the DLL file hash if you can get it.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: The fix log
+      description: Paste zulu_fix.log (Windows %TEMP%, or the Proton prefix AppData\Local\Temp).
+    validations:
+      required: false

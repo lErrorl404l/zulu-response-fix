@@ -80,6 +80,17 @@ You can verify every claim below yourself:
   exact call patterns.
 - The released DLL is scanned for malware by CI before every release.
 
+## What still does not work
+
+The fix restores the single-player game. The original online features stay
+dead, because the developers' servers are gone:
+
+- the multiplayer server browser shows nothing
+- online matches cannot be created or joined
+
+This does not affect the fix's purpose: the game loads, runs, and stays
+open.
+
 ## How it works (short version)
 
 The game's access check talks to `110.232.115.186:80`. That server is dead

@@ -1,0 +1,19 @@
+name: Feature request
+description: Something this project should add or change
+title: "[feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: want
+    attributes:
+      label: What do you want?
+      description: One clear sentence. This is a small single-file project; large changes will not fit.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why?
+      description: Who benefits, and from what.
+    validations:
+      required: false
