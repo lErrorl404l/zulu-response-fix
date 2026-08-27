@@ -25,13 +25,13 @@ are still up; the original website is offline.
 ## Install (one minute, no technical knowledge needed)
 
 1. Go to **[Releases](https://github.com/lErrorl404l/zulu-response-fix/releases)**
-2. Download the latest **Windows zip** (the file whose name ends in `-windows.zip`)
-3. Unzip it anywhere
-4. Find your game folder:
+2. Download **`dinput8.dll`** — the first file in the release assets, with
+   its SHA-256 shown right below it
+3. Find your game folder:
    - In Steam, right-click **Zulu Response** → **Manage** → **Browse local files**
-5. In the folder that opens, go into **`Binaries`** → **`Win32`**
-6. **Drag `dinput8.dll`** from the unzipped folder into **`Win32`**
-7. Launch Zulu Response
+4. In the folder that opens, go into **`Binaries`** → **`Win32`**
+5. **Drag `dinput8.dll`** into **`Win32`**
+6. Launch Zulu Response
 
 That is the whole install: one file dragged into one folder, the same way
 every game mod works. Nothing is installed system-wide, no script runs,
