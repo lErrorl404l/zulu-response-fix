@@ -4,10 +4,6 @@ on:
   push:
   pull_request:
 
-permissions:
-  contents: write
-  id-token: write
-
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -36,11 +32,6 @@ jobs:
 
       - name: Run behavioural tests under Wine
         run: wine test_harness.exe
-
-      - name: Sign build provenance
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: dinput8.dll
 
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4

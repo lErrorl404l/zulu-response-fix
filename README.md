@@ -45,8 +45,6 @@ You can verify every claim below yourself:
 - **Source**: the whole project is ~300 lines of C in this repository.
 - **CI-built**: the released DLL is compiled by GitHub's servers from this
   source on every change, not on anyone's personal computer.
-- **Provenance**: the build is signed by GitHub (`attest-build-provenance`);
-  anyone can verify it came from this repository's CI.
 - **Hash**: each release publishes the SHA-256 of the DLL. Compare it with
   what you downloaded — if they match, your file is byte-for-byte the CI
   build.
