@@ -20,7 +20,7 @@ jobs:
       - name: Install mingw
         run: sudo apt-get update && sudo apt-get install -y mingw-w64
 
-      - uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/init@v4
         with:
           languages: cpp
 
@@ -32,4 +32,4 @@ jobs:
           i686-w64-mingw32-gcc -O2 -o test_harness.exe \
             test_harness.c -lws2_32 -ldinput8 -lwininet
 
-      - uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@v4
